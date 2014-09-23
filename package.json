@@ -1,0 +1,37 @@
+{
+  "name": "gulp-sync-processor",
+  "version": "0.1.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha test/*.spec.js -R spec"
+  },
+  "author": "morlay",
+  "license": "WTFPL",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/morlay/gulp-sync-processor.git"
+  },
+  "bugs": {
+    "url": "https://github.com/morlay/gulp-sync-processor/issues"
+  },
+  "homepage": "https://github.com/morlay/gulp-sync-processor",
+  "dependencies": {
+    "gulp-util": "^3.0.1",
+    "lodash": "^2.4.1"
+  },
+  "directories": {
+    "test": "test"
+  },
+  "devDependencies": {
+    "chai": "^1.9.1",
+    "gulp": "^3.8.8",
+    "map-stream": "^0.1.0",
+    "mocha": "^1.21.4"
+  },
+  "description": "Sometime we need to use the data which other pipe emitted for processing into docs or other files by template. But if downstream depend the files, in async may it will cause error. so we may need this library.",
+  "keywords": [
+    "gulp",
+    "gulp-plugins",
+    "processor"
+  ]
+}
