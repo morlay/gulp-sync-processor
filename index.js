@@ -26,10 +26,6 @@ var defaultConfig = {
 
 module.exports = function(config) {
 
-  config = _.merge(defaultConfig, config, function(a, b) {
-    return _.isArray(a) ? a.concat(b) : undefined;
-  });
-
   var stream = Stream.PassThrough({
     objectMode: true
   });
@@ -40,6 +36,10 @@ module.exports = function(config) {
   };
 
   stream._flush = function(cb) {
+
+    config = _.merge(defaultConfig, config, function(a, b) {
+      return _.isArray(a) ? a.concat(b) : undefined;
+    });
 
     _.forEach(config.files, function(fileObj) {
       var fileOptions = _.merge(config.options, fileObj.options || {});
