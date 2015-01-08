@@ -7,10 +7,10 @@ var _ = require('lodash');
 var gulp = require('gulp');
 var map = require('map-stream')
 
-describe('gulp sync processor', function() {
+describe('gulp sync processor', function () {
   var dataObj, tplString;
 
-  beforeEach(function() {
+  beforeEach(function () {
     dataObj = {
       key: 123
     }
@@ -18,11 +18,11 @@ describe('gulp sync processor', function() {
     fs.writeFileSync(__dirname + '/tpl.txt.ejs', tplString)
   })
 
-  afterEach(function() {
+  afterEach(function () {
     fs.unlinkSync(__dirname + '/tpl.txt.ejs');
   })
 
-  it('sync processor should do the processing', function(done) {
+  it('sync processor should do the processing', function (done) {
 
     var resultString = _.template(tplString, dataObj);
 
@@ -30,7 +30,7 @@ describe('gulp sync processor', function() {
       .pipe(syncProcessor({
         options: {
           data: dataObj,
-          isProcess: function() {
+          isProcess: function () {
             return true;
           }
         },
@@ -40,13 +40,13 @@ describe('gulp sync processor', function() {
       }))
       .pipe(assertResult(resultString))
       .pipe(gulp.dest(__dirname))
-      .on('end', function() {
+      .on('end', function () {
         fs.unlinkSync(__dirname + '/tpl.txt');
         done();
       });
   });
 
-  it('processor should be changed', function(done) {
+  it('processor should be changed', function (done) {
 
     var resultString = _.template(tplString + 'pu', dataObj);
 
@@ -54,10 +54,10 @@ describe('gulp sync processor', function() {
       .pipe(syncProcessor({
         options: {
           data: dataObj,
-          isProcess: function() {
+          isProcess: function () {
             return true;
           },
-          processor: function(tplString, dataObj) {
+          processor: function (tplString, dataObj) {
             return _.template(tplString + 'pu', dataObj)
           }
         },
@@ -67,13 +67,13 @@ describe('gulp sync processor', function() {
       }))
       .pipe(assertResult(resultString))
       .pipe(gulp.dest(__dirname))
-      .on('end', function() {
+      .on('end', function () {
         fs.unlinkSync(__dirname + '/tpl.txt');
         done();
       });
   });
 
-  it('dest of fileObj should be changed', function(done) {
+  it('dest of fileObj should be changable', function (done) {
 
     var resultString = _.template(tplString + 'pu', dataObj);
 
@@ -81,10 +81,10 @@ describe('gulp sync processor', function() {
       .pipe(syncProcessor({
         options: {
           data: dataObj,
-          isProcess: function() {
+          isProcess: function () {
             return true;
           },
-          processor: function(tplString, dataObj) {
+          processor: function (tplString, dataObj) {
             return _.template(tplString + 'pu', dataObj)
           }
         },
@@ -95,8 +95,7 @@ describe('gulp sync processor', function() {
       }))
       .pipe(assertResult(resultString))
       .pipe(gulp.dest(__dirname))
-      .on('end', function() {
-        fs.unlinkSync(__dirname + '/tpl.txt');
+      .on('end', function () {
         fs.unlinkSync(__dirname + '/tpl1234.txt');
         done();
       });
@@ -106,7 +105,7 @@ describe('gulp sync processor', function() {
 });
 
 function assertResult(resultString) {
-  return map(function(file, callback) {
+  return map(function (file, callback) {
     if (path.extname(file.path) === '.txt') {
       assert.equal(resultString, String(file.contents))
     }
