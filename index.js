@@ -2,7 +2,8 @@
 
 var path = require('path');
 var gutil = require('gulp-util');
-var _ = require('lodash');
+var template = require('lodash.template');
+var R = require('ramda');
 var fs = require('fs');
 var Stream = require('stream');
 
@@ -11,18 +12,15 @@ var PLUGIN_NAME = 'gulp-sync-processor';
 var defaultConfig = {
   files: [],
   options: {
-    data: {
-
-    },
+    data: {},
     isProcess: function (data) {
       return false;
     },
     processor: function (tplString, data) {
-      return _.template(tplString, data);
+      return template(tplString)(data);
     }
   }
-}
-
+};
 
 module.exports = function (config) {
 
@@ -37,21 +35,25 @@ module.exports = function (config) {
 
   stream._flush = function (cb) {
 
-    config = _.merge(_.clone(defaultConfig), config);
+    config = {
+      files: config.files,
+      options: R.merge(defaultConfig.options, config.options)
+    };
 
-    _.forEach(config.files, function (fileObj) {
-      var fileOptions = _.merge(config.options, fileObj.options || {});
+    R.forEach(function (fileObj) {
+
+      var fileOptions = R.merge(config.options, fileObj.options);
 
       if (fileOptions.isProcess(fileOptions.data)) {
         try {
           var srcFileBuffer = fs.readFileSync(fileObj.src);
           var contents = fileOptions.processor(String(srcFileBuffer),
             fileOptions.data);
+
           var file = new gutil.File({
             contents: new Buffer(contents),
             cwd: process.cwd(),
-            path: !!fileObj.dest ? fileObj.dest : path.join(process
-              .cwd(),
+            path: !!fileObj.dest ? fileObj.dest : path.join(process.cwd(),
               path.basename(fileObj.src, path.extname(fileObj.src))
             )
           });
@@ -60,10 +62,12 @@ module.exports = function (config) {
           stream.emit('error', e);
         }
       }
-    });
+
+    })(config.files);
 
     cb();
+
   };
 
   return stream;
-}
+};

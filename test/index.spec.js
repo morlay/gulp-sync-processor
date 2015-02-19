@@ -3,9 +3,9 @@ var syncProcessor = require('../.');
 
 var fs = require('fs');
 var path = require('path');
-var _ = require('lodash');
+var template = require('lodash.template');
 var gulp = require('gulp');
-var map = require('map-stream')
+var map = require('map-stream');
 
 describe('gulp sync processor', function () {
   var dataObj, tplString;
@@ -16,15 +16,15 @@ describe('gulp sync processor', function () {
     }
     tplString = '<%= key %>';
     fs.writeFileSync(__dirname + '/tpl.txt.ejs', tplString)
-  })
+  });
 
   afterEach(function () {
     fs.unlinkSync(__dirname + '/tpl.txt.ejs');
-  })
+  });
 
   it('sync processor should do the processing', function (done) {
 
-    var resultString = _.template(tplString, dataObj);
+    var resultString = template(tplString)(dataObj);
 
     gulp.src(path.join(__dirname, '/tpl.txt.ejs'))
       .pipe(syncProcessor({
@@ -48,7 +48,7 @@ describe('gulp sync processor', function () {
 
   it('processor should be changed', function (done) {
 
-    var resultString = _.template(tplString + 'pu', dataObj);
+    var resultString = template(tplString + 'pu')(dataObj);
 
     gulp.src(path.join(__dirname, '/tpl.txt.ejs'))
       .pipe(syncProcessor({
@@ -58,7 +58,7 @@ describe('gulp sync processor', function () {
             return true;
           },
           processor: function (tplString, dataObj) {
-            return _.template(tplString + 'pu', dataObj)
+            return template(tplString + 'pu')(dataObj)
           }
         },
         files: [{
@@ -75,7 +75,7 @@ describe('gulp sync processor', function () {
 
   it('dest of fileObj should be changable', function (done) {
 
-    var resultString = _.template(tplString + 'pu', dataObj);
+    var resultString = template(tplString + 'pu')(dataObj);
 
     gulp.src(path.join(__dirname, '/tpl.txt.ejs'))
       .pipe(syncProcessor({
@@ -85,7 +85,7 @@ describe('gulp sync processor', function () {
             return true;
           },
           processor: function (tplString, dataObj) {
-            return _.template(tplString + 'pu', dataObj)
+            return template(tplString + 'pu')(dataObj)
           }
         },
         files: [{
